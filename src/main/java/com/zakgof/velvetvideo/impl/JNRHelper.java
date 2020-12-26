@@ -142,6 +142,8 @@ public class JNRHelper {
 	private static String libVersionAndName(String libName, int libVersion) {
 		if (PLATFORM.startsWith("linux")) {
 			return "lib" + libName + ".so." + libVersion;
+		} else if (PLATFORM.startsWith("darwin")) {
+			return "lib" + libName + "." + libVersion + ".dylib";
 		} else if (PLATFORM.startsWith("windows")) {
 			return libName + "-" + libVersion + ".dll";
 		}
