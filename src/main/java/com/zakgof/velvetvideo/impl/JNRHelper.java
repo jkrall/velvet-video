@@ -175,7 +175,7 @@ public class JNRHelper {
 		} else if (os.contains("mac") && arch.contains("64")) {
 			return "darwin";
         } else {
-            throw new VelvetVideoException("Unsupported platform. Supported platforms are windows64 and linux64");
+            throw new VelvetVideoException("Unsupported platform: ("+os+","+arch+") Supported platforms are windows64 and linux64");
         }
     }
 
