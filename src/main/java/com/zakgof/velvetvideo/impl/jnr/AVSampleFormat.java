@@ -67,7 +67,7 @@ public enum AVSampleFormat {
 		LOG.info("AVSampleFormat from getEncoding {}", targetFormat.getEncoding());
 		LOG.info("AVSampleFormat from getSampleSizeInBits {}", targetFormat.getSampleSizeInBits());
 		LOG.info("AVSampleFormat from values {} ", values());
-		return Arrays.stream(values()).filter(sf -> sf.encoding == targetFormat.getEncoding() && sf.sampleSizeInBits == targetFormat.getSampleSizeInBits() && !sf.planar).findFirst().get();
+		return Arrays.stream(values()).filter(sf -> sf.encoding == targetFormat.getEncoding() && sf.sampleSizeInBits >= targetFormat.getSampleSizeInBits() && !sf.planar).findFirst().get();
 	}
 
 	public boolean planar() {
