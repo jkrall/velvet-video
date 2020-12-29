@@ -8,10 +8,11 @@ import javax.sound.sampled.AudioFormat.Encoding;
 import com.zakgof.velvetvideo.VelvetVideoException;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RequiredArgsConstructor
 public enum AVSampleFormat {
-
 	AV_SAMPLE_FMT_U8(Encoding.PCM_UNSIGNED, 8, false),
 	AV_SAMPLE_FMT_S16(Encoding.PCM_SIGNED, 16, false),
 	AV_SAMPLE_FMT_S32(Encoding.PCM_SIGNED, 32, false),
@@ -25,6 +26,8 @@ public enum AVSampleFormat {
 	AV_SAMPLE_FMT_S64(Encoding.PCM_SIGNED, 64, false),
 	AV_SAMPLE_FMT_S64P(Encoding.PCM_SIGNED, 64, true),
 	;
+
+	private static final Logger LOG = LoggerFactory.getLogger("velvet-video");
 
 	private final Encoding encoding;
 	private final int sampleSizeInBits;
@@ -60,6 +63,10 @@ public enum AVSampleFormat {
 	}
 
 	public static AVSampleFormat from(AudioFormat targetFormat) {
+		LOG.info("AVSampleFormat from: {}", targetFormat);
+		LOG.info("AVSampleFormat from getEncoding {}", targetFormat.getEncoding());
+		LOG.info("AVSampleFormat from getSampleSizeInBits {}", targetFormat.getSampleSizeInBits());
+		LOG.info("AVSampleFormat from values {} ", values());
 		return Arrays.stream(values()).filter(sf -> sf.encoding == targetFormat.getEncoding() && sf.sampleSizeInBits == targetFormat.getSampleSizeInBits() && !sf.planar).findFirst().get();
 	}
 
