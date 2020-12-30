@@ -4,10 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
-import java.net.JarURLConnection;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -157,7 +154,7 @@ public class JNRHelper {
 
 				JarURLConnection connection = (JarURLConnection) url.openConnection();
 				final URL jarurl = connection.getJarFileURL();
-				String zipFile = jarurl.getFile();
+				String zipFile = URLDecoder.decode(jarurl.getFile(), "UTF-8");
 				return new File(zipFile);
 			}
 			return new File(url.toURI());
