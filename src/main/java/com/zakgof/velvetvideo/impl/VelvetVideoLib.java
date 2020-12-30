@@ -1021,6 +1021,8 @@ public class VelvetVideoLib implements IVelvetVideoLib {
 
 			public DecoderAudioStreamImpl(AVStream avstream, String name) {
 				super(avstream, name);
+				logDecoder.atInfo().addArgument(index()).addArgument(codecCtx.sample_fmt).log("stream {}: sample_fmt [{}]");
+				logDecoder.atInfo().addArgument(index()).addArgument(codecCtx.sample_fmt.get().destFormat()).log("stream {}: destFormat [{}]");
 		    	AudioFormat suggestedFormat = codecCtx.sample_fmt.get().destFormat().toAudioFormat(codecCtx.sample_rate.get(), codecCtx.channels.get());
 		    	targetFormat = new BestMatchingAudioFormatConvertor().apply(suggestedFormat);
 		    	logDecoder.atInfo().addArgument(index()).addArgument(targetFormat).log("stream {}: audio format [{}]");
