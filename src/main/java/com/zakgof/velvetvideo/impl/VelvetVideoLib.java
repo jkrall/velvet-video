@@ -796,6 +796,10 @@ public class VelvetVideoLib implements IVelvetVideoLib {
         return new DemuxerImpl(input);
     }
 
+    public IDemuxer demuxer(ISeekableInput input, AudioFormat toFormat) {
+        return new DemuxerImpl(input, toFormat);
+    }
+
     public class DemuxerImpl implements IDemuxer {
 
     	private final Logger logDemuxer = LoggerFactory.getLogger("velvet-video.demuxer");
@@ -809,7 +813,11 @@ public class VelvetVideoLib implements IVelvetVideoLib {
         private final List<AbstractDecoderStream> allStreams = new ArrayList<>();
 		private int flushStreamIndex = 0;
 
-        public DemuxerImpl(ISeekableInput input) {
+		public DemuxerImpl(ISeekableInput input) {
+			this(input, null);
+		}
+
+        public DemuxerImpl(ISeekableInput input, AudioFormat toFormat) {
             this.input = input;
             this.packet = libavcodec.av_packet_alloc();
             this.formatCtx = libavformat.avformat_alloc_context();
@@ -837,7 +845,7 @@ public class VelvetVideoLib implements IVelvetVideoLib {
                     allStreams.add(decoder);
                 } else if (mediaType == LibAVCodec.AVMEDIA_TYPE_AUDIO) { // TODO dry
                     avstream.codec.get().strict_std_compliance.set(-2);
-                    DecoderAudioStreamImpl decoder = new DecoderAudioStreamImpl(avstream, defaultName(avstream, i));
+                    DecoderAudioStreamImpl decoder = new DecoderAudioStreamImpl(avstream, defaultName(avstream, i), toFormat);
                     indexToAudioStream.put(i, decoder);
                     allStreams.add(decoder);
                 }
@@ -1019,12 +1027,16 @@ public class VelvetVideoLib implements IVelvetVideoLib {
 
 			private final AudioFormat targetFormat;
 
-			public DecoderAudioStreamImpl(AVStream avstream, String name) {
+			public DecoderAudioStreamImpl(AVStream avstream, String name, AudioFormat toFormat) {
 				super(avstream, name);
 				logDecoder.atInfo().addArgument(index()).addArgument(codecCtx.sample_fmt).log("stream {}: sample_fmt [{}]");
 				logDecoder.atInfo().addArgument(index()).addArgument(codecCtx.sample_fmt.get().destFormat()).log("stream {}: destFormat [{}]");
 		    	AudioFormat suggestedFormat = codecCtx.sample_fmt.get().destFormat().toAudioFormat(codecCtx.sample_rate.get(), codecCtx.channels.get());
-		    	targetFormat = new BestMatchingAudioFormatConvertor().apply(suggestedFormat);
+		    	if (toFormat == null) {
+			    	targetFormat = new BestMatchingAudioFormatConvertor().apply(suggestedFormat);
+				} else {
+		    		targetFormat = new BestMatchingAudioFormatConvertor().apply(toFormat);
+				}
 		    	logDecoder.atInfo().addArgument(index()).addArgument(targetFormat).log("stream {}: audio format [{}]");
 		    	if (!targetFormat.equals(suggestedFormat)) {
 		    		logDecoder.atWarn().addArgument(suggestedFormat).addArgument(targetFormat).log("Audio format converted [{}] -> [{}]");
