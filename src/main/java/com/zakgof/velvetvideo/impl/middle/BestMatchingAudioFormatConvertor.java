@@ -13,8 +13,11 @@ import javax.sound.sampled.Mixer;
 
 import com.zakgof.tools.generic.MinFinder;
 import com.zakgof.velvetvideo.impl.jnr.AVSampleFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BestMatchingAudioFormatConvertor implements Function<AudioFormat, AudioFormat> {
+	private static final Logger LOG = LoggerFactory.getLogger("velvet-video");
 
 	private final Collection<AudioFormat> supportedFormats;
 
@@ -28,7 +31,10 @@ public class BestMatchingAudioFormatConvertor implements Function<AudioFormat, A
 
 	@Override
 	public AudioFormat apply(AudioFormat suggested) {
+		LOG.info("AudioFormat suggested: {}", suggested);
+		LOG.info("AudioFormat supportedFormats: {}", supportedFormats);
 		AudioFormat bestFormat = MinFinder.find(supportedFormats, format -> compare(suggested, format)).get();
+		LOG.info("AudioFormat bestFormat: {}", bestFormat);
 		if (bestFormat != null) {
 			return new AudioFormat(bestFormat.getEncoding(), suggested.getSampleRate(), bestFormat.getSampleSizeInBits(), bestFormat.getChannels(), bestFormat.getFrameSize(), suggested.getSampleRate(), bestFormat.isBigEndian());
 		}
