@@ -109,6 +109,7 @@ public class JNRHelper {
 			throw new VelvetVideoException("Cannot locate native libraries resource " + folder + ". Make sure that velvet-video-natives in on classpath.");
 		}
 		File location = locationFor(resource);
+		LOG.atDebug().addArgument(location).addArgument(location.isFile()).log("Resource location: {}, isFile: {}");
 		boolean isJar = location.isFile();
 		if (isJar) {
 		    try (ZipFile zif = new ZipFile(location)) {
