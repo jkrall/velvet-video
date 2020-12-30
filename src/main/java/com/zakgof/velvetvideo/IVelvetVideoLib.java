@@ -80,6 +80,7 @@ public interface IVelvetVideoLib {
      * @return demuxer instance
      */
     IDemuxer demuxer(ISeekableInput input);
+    IDemuxer demuxer(ISeekableInput input, AudioFormat toFormat);
 
 	/**
 	 * Open a demuxer to demux from the specified file
